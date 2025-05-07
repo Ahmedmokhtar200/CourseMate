@@ -38,8 +38,6 @@ The project leverages two Kaggle datasets:
 
 ### Prerequisites
 - Python (>=3.8)
-- Node.js (>=16.x)
-- PostgreSQL (>=13)
 - Docker (optional, for containerized deployment)
 - Git
 
