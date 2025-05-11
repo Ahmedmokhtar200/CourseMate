@@ -29,7 +29,7 @@ function Sidebar({ user, onLogout, isOpen, onClose }) {
                 return (
                     <div className="p-3 space-y-2">
                         <h3 className="text-base font-semibold mb-2 text-white">Profile Details</h3>
-                        <p className="text-sm"><strong className="font-medium text-gray-300">Name:</strong> {user.name}</p>
+                        <p className="text-sm"><strong className="font-medium text-gray-300">Username:</strong> {user.username}</p>
                         <p className="text-sm"><strong className="font-medium text-gray-300">Email:</strong> {user.email}</p>
                         <button className="mt-3 text-xs text-indigo-400 hover:text-indigo-300 hover:underline focus-visible:ring-1 focus-visible:ring-white rounded px-1">
                             Edit Profile (Not functional)

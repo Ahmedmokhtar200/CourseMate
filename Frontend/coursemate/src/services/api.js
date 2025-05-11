@@ -102,14 +102,12 @@ export const logoutUser = () => {
 
 
 // --- Course API Calls ---
-export const fetchCourses = (searchTerm = '') => {
-  let endpoint = '/courses/';
-  if (searchTerm) {
-    // Assuming your backend supports search via query parameter e.g. /courses/?search=react
-    endpoint += `?search=${encodeURIComponent(searchTerm)}`;
-  }
-  return request(endpoint, 'GET', null, false); // Fetching courses might not require auth
+// src/services/api.js
+export const fetchCourses = async (page = 1, searchTerm = '') => {
+    const url = `/courses/?page=${page}${searchTerm ? `&search=${searchTerm}` : ''}`;
+    return request(url, 'GET', null, false);
 };
+
 
 export const fetchCourseById = (courseId) => {
   return request(`/courses/${courseId}/`, 'GET', null, false); // Fetching course details might not require auth
