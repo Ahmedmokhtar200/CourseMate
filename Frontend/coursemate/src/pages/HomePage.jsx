@@ -1,4 +1,3 @@
-
 // src/pages/HomePage.jsx (Updated)
 import React, { useState, useCallback, useEffect } from 'react';
 import CourseCard from '../components/Course/CourseCard';
@@ -83,7 +82,7 @@ function HomePage() {
     }
 
     return (
-        <div className="p-4 sm:p-6 lg:p-8">
+        <div className="p-4 sm:p-6 lg:p-8 bg-white">
             <div className="mb-8 max-w-3xl mx-auto bg-white p-6 rounded-lg shadow border border-gray-200">
                 <label htmlFor="course-search" className="block text-lg font-medium text-gray-800 mb-2">Find Your Next Course</label>
                 <div className="relative flex items-center">

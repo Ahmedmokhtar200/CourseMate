@@ -40,7 +40,7 @@ const MainLayout = ({ children, auth, location }) => {
       {/* Backdrop for mobile when sidebar is open */}
       {auth.isLoggedIn && isSidebarOpen && window.innerWidth < 1024 && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-20 lg:hidden"
+          className="fixed inset-0 bg-black bg-opacity-50 z-10 lg:hidden"
           onClick={closeSidebar}
           aria-hidden="true"
         />
@@ -48,7 +48,7 @@ const MainLayout = ({ children, auth, location }) => {
 
       {/* Main Content Container */}
       <div
-        className={`flex-1 flex flex-col transition-transform duration-300 ease-in-out lg:ml-0 ${
+        className={`flex-1 flex flex-col transition-transform duration-300 ease-in-out bg-white z-20 relative lg:ml-0 ${
           isSidebarOpen && window.innerWidth < 1024 ? 'translate-x-0' : 'translate-x-0'
         } ${auth.isLoggedIn && window.innerWidth >= 1024 ? 'lg:ml-64' : 'lg:ml-0'}`}
       >
@@ -83,10 +83,7 @@ const MainLayout = ({ children, auth, location }) => {
           {children}
         </main>
 
-        {/* Footer */}
-        <footer className="bg-gray-200 text-center p-4 text-xs text-gray-500 border-t border-gray-300 mt-auto flex-shrink-0">
-          © {new Date().getFullYear()} CourseMate Platform. All rights reserved.
-        </footer>
+        
       </div>
     </div>
   );

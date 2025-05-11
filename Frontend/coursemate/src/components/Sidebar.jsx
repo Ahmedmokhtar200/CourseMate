@@ -1,4 +1,3 @@
-
 // src/components/Sidebar.jsx
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -106,7 +105,7 @@ function Sidebar({ user, onLogout, isOpen, onClose }) {
        <>
             {isOpen && (
                  <div
-                   className="fixed inset-0 bg-black bg-opacity-60 z-30 lg:hidden backdrop-blur-sm"
+                   className="fixed inset-0 bg-black bg-opacity-60 z-10 lg:hidden backdrop-blur-sm"
                    onClick={onClose}
                    aria-hidden="true"
                  ></div>
