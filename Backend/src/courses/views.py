@@ -8,6 +8,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import (IsAuthenticated,
                                         AllowAny)
+from rest_framework.decorators import action
+from rest_framework import viewsets
 
 from courses.pagination import SmallSetPagination
 from courses.serializers import (CourseSerializer,
@@ -22,29 +24,19 @@ from courses.models import (Course,
 User = get_user_model()
 
 
-class CourseListAPIView(ListAPIView):
+class CourseViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
+    queryset = Course.objects.all()
     serializer_class = CourseSerializer
 
     def get_queryset(self):
-        # Start with all courses
-        queryset = Course.objects.all()
-
-        # Get query parameters
-        search_query = self.request.query_params.get('search', None)
-        category = self.request.query_params.get('category', None)
-
-        # Apply search filter
-        if search_query:
+        queryset = super().get_queryset()
+        search = self.request.query_params.get('search', None)
+        if search:
             queryset = queryset.filter(
-                Q(name__icontains=search_query) |
-                Q(description__icontains=search_query)
+                Q(name__icontains=search) |
+                Q(description__icontains=search)
             )
-
-        # Apply category filter
-        if category:
-            queryset = queryset.filter(category=category)  # Assuming category field
-
         return queryset
 
     def list(self, request, *args, **kwargs):
@@ -57,6 +49,16 @@ class CourseListAPIView(ListAPIView):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response({'courses': serializer.data})
+
+    @action(detail=True, methods=['get'])
+    def recommendations(self, request, pk=None):
+        course = self.get_object()
+        # Fetch up to 4 related courses (exclude current course)
+        recommended = Course.objects.filter(
+            Q(university=course.university)
+        ).exclude(id=course.id)[:4]
+        serializer = self.get_serializer(recommended, many=True)
+        return Response(serializer.data)
 
 
 class CourseDetailAPIView(APIView):
@@ -73,7 +75,7 @@ class CourseDetailAPIView(APIView):
 
 
 class CourseUserHistoryListAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
 
     def get(self, request):
         user_id = request.user.id

@@ -21,6 +21,7 @@ class Course(models.Model):
     description = models.TextField()
     rating = models.DecimalField(max_digits=3, decimal_places=1, null=True, blank=True)
     url = models.URLField(max_length=500)
+    thumbnail = models.URLField(max_length=500, blank=True, null=True)
 
     def __str__(self):
         return f"{self.name}"

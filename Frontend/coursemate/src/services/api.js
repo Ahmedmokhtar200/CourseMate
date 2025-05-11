@@ -113,6 +113,9 @@ export const fetchCourseById = (courseId) => {
   return request(`/courses/${courseId}/`, 'GET', null, false); // Fetching course details might not require auth
 };
 
+export const fetchRecommendedCourses = async (courseId) => {
+  return request(`/courses/${courseId}/recommendations/`, 'GET', null, false);
+};
 // --- User History/Data API Calls (Example - adjust to your backend) ---
 // Assuming these are part of the user object fetched by fetchAuthenticatedUser
 // or require separate endpoints.
@@ -124,6 +127,8 @@ export const fetchCourseById = (courseId) => {
 // Assuming these are part of the user object fetched by fetchAuthenticatedUser
 // or require separate endpoints.
 export const fetchUserViewHistory = () => request('/courses/users/history/', 'GET');
+export const addUserViewHistory = (courseId) => request('/courses/users/history/', 'POST', { courseId: courseId }, true);
+
 export const fetchUserRatings = () => request('/courses/users/ratings/', 'GET');
 export const fetchUserReviews = () => request('/courses/users/reviews/', 'GET');
 

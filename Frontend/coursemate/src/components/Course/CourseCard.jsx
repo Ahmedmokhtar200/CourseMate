@@ -2,12 +2,17 @@
 // src/components/Course/CourseCard.jsx
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { addUserViewHistory } from '../../services/api';
+import { fetchUserViewHistory } from '../../services/api';
 
 function CourseCard({ course }) {
     const navigate = useNavigate();
-
+    
     const handleClick = () => {
+        addUserViewHistory(course.id);
         navigate(`/course/${course.id}`);
+        
+    
     };
 
     const handleKeyPress = useCallback((event) => {
