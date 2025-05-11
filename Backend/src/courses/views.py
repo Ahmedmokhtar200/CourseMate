@@ -59,6 +59,7 @@ class CourseListAPIView(ListAPIView):
 
 
 class CourseDetailAPIView(APIView):
+    permission_classes = [AllowAny]
     def get_object(self, pk):
         course = get_object_or_404(Course, pk=pk)
         return course

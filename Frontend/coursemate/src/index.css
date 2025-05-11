@@ -1,0 +1,36 @@
+/* src/index.css */
+@import "tailwindcss";
+/* Optional: Custom base styles or component styles can go here */
+body {
+  font-family: 'Inter', sans-serif; /* Ensure Inter font is applied */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar styles (optional) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Light grey track */
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #a8a29e; /* Tailwind stone-400 */
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #78716c; /* Tailwind stone-500 */
+}
+
+/* Custom focus-visible styles for accessibility */
+*:focus-visible {
+  outline: 3px solid rgb(99 102 241 / 0.6); /* Tailwind indigo-500 with opacity */
+  outline-offset: 2px;
+  border-radius: 2px; /* Optional: slightly round the focus outline */
+}
+/* Remove default outline for elements with custom focus-visible if needed, but focus-visible should handle it */
+/* *:focus {
+  outline: none;
+} */

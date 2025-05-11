@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     'courses',
     'authentication',
 
+    'corsheaders',
+
     'rest_framework',
 
     'django.contrib.admin',
@@ -98,8 +100,8 @@ SIMPLE_JWT = {
     "JTI_CLAIM": "jti",
 
     "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
-    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
-    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
+    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=600),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=100),
 
     "TOKEN_OBTAIN_SERIALIZER": "authentication.api.views.MyTokenObtainPairSerializer",
     "TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSerializer",
@@ -117,6 +119,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 
     'djangorestframework_camel_case.middleware.CamelCaseMiddleWare',
 ]
@@ -204,4 +209,25 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 # # Frontend URL (adjust this to match your frontend)
 FRONTEND_URL = 'http://localhost:5173'  # Or your production frontend URL
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # Vite default port
+    "http://127.0.0.1:5173",  # Add if needed
+]
+
+CORS_ALLOW_METHODS = [
+    "GET",
+    "POST",
+    "OPTIONS",
+    "PUT",
+    "PATCH",
+    "DELETE",
+]
+
+CORS_ALLOW_HEADERS = [
+    "content-type",
+    "authorization",
+    "x-csrftoken",
+]
+
+# Allow credentials if needed (e.g., for authenticated requests later)
+CORS_ALLOW_CREDENTIALS = True
