@@ -2,9 +2,15 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ClearIcon,UserIcon, HistoryIcon, StarIcon, ChatBubbleLeftIcon, LogoutIcon, AppLogoIcon } from './Icons'; // Adjust path as needed
+import { fetchUserViewHistory, fetchUserRatings, fetchUserReviews } from '../services/api';
+import { formatDistanceToNow } from 'date-fns';
 
 function Sidebar({ user, onLogout, isOpen, onClose }) {
     const [activeSection, setActiveSection] = useState('profile');
+    const [viewHistory, setViewHistory] = useState([]);
+    const [ratingHistory, setRatingHistory] = useState([]);
+    const [reviewHistory, setReviewHistory] = useState([]);
+
     const navigate = useNavigate();
 
     const menuItems = useMemo(() => [
@@ -21,6 +27,11 @@ function Sidebar({ user, onLogout, isOpen, onClose }) {
             onClose();
         }
     };
+  
+    useEffect(() => {
+        fetchUserViewHistory().then(setViewHistory);
+    }, []);
+
 
     const renderSectionContent = useCallback(() => {
         if (!user) return <p className="text-sm text-gray-400 p-2">Loading user data...</p>;
@@ -40,14 +51,14 @@ function Sidebar({ user, onLogout, isOpen, onClose }) {
                 return (
                     <div className="p-1 space-y-3">
                         <h3 className="text-base font-semibold mb-2 text-white px-2">View History</h3>
-                        {user.viewHistory && user.viewHistory.length > 0 ? (
+                        {viewHistory && viewHistory.length > 0 ? (
                             <ul className="space-y-3 max-h-48 overflow-y-auto pr-1">
-                                {user.viewHistory.map(item => (
+                                {viewHistory.map(item => (
                                     <li key={`hist-${item.id}`} className="flex items-center space-x-2 p-2 rounded hover:bg-gray-700/50 transition-colors duration-150 cursor-pointer" onClick={() => navigate(`/course/${item.id}`)}>
-                                        <img src={item.thumbnail} alt="" className="w-12 h-8 object-cover rounded flex-shrink-0" aria-hidden="true"/>
+                                        {/* <img src={item.thumbnail} alt="" className="w-12 h-8 object-cover rounded flex-shrink-0" aria-hidden="true"/> */}
                                         <div className="text-xs overflow-hidden">
-                                            <span className="font-medium block truncate text-gray-200">{item.title}</span>
-                                            <span className="text-gray-400">Viewed: {item.dateViewed}</span>
+                                            <span className="font-medium block truncate text-gray-200">{item.course.name}</span>
+                                            <span className="text-gray-400">Viewed: {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}</span>
                                         </div>
                                     </li>
                                 ))}
@@ -59,9 +70,9 @@ function Sidebar({ user, onLogout, isOpen, onClose }) {
                 return (
                     <div className="p-1 space-y-2">
                         <h3 className="text-base font-semibold mb-2 text-white px-2">Rating History</h3>
-                        {user.ratingHistory && user.ratingHistory.length > 0 ? (
+                        {ratingHistory && ratingHistory.length > 0 ? (
                             <ul className="space-y-2 max-h-48 overflow-y-auto pr-1">
-                                {user.ratingHistory.map(item => (
+                                {ratingHistory.map(item => (
                                     <li key={`rate-${item.id}`} className="text-xs p-2 rounded hover:bg-gray-700/50 transition-colors duration-150 cursor-pointer" onClick={() => navigate(`/course/${item.id}`)}>
                                         <span className="font-medium block truncate text-gray-200">{item.title}</span>
                                         <span className="text-yellow-400">{ '★'.repeat(item.rating) }{ '☆'.repeat(5 - item.rating) }</span>

@@ -120,4 +120,12 @@ export const fetchCourseById = (courseId) => {
 // export const fetchUserRatings = () => request('/auth/user/ratings/', 'GET');
 // export const fetchUserReviews = () => request('/auth/user/reviews/', 'GET');
 
+// --- User History/Data API Calls (Example - adjust to your backend) ---
+// Assuming these are part of the user object fetched by fetchAuthenticatedUser
+// or require separate endpoints.
+export const fetchUserViewHistory = () => request('/courses/users/history/', 'GET');
+export const fetchUserRatings = () => request('/courses/users/ratings/', 'GET');
+export const fetchUserReviews = () => request('/courses/users/reviews/', 'GET');
+
+
 export default request; // Export the base request function if needed elsewhere, or just specific methods

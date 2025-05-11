@@ -38,6 +38,7 @@ class UserCourseHistory(models.Model):
     course = models.ForeignKey(Course,
                                on_delete=models.CASCADE,
                                related_name='user_history')
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = "user_course_history"

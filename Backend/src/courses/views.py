@@ -21,6 +21,7 @@ from courses.models import (Course,
 
 User = get_user_model()
 
+
 class CourseListAPIView(ListAPIView):
     permission_classes = [AllowAny]
     serializer_class = CourseSerializer
@@ -60,6 +61,7 @@ class CourseListAPIView(ListAPIView):
 
 class CourseDetailAPIView(APIView):
     permission_classes = [AllowAny]
+
     def get_object(self, pk):
         course = get_object_or_404(Course, pk=pk)
         return course
@@ -88,7 +90,19 @@ class CourseUserHistoryListAPIView(APIView):
             context={'request': request}
         )
 
-        return Response({'data': serializer.data})
+        return Response(serializer.data)
+
+    def post(self, request):
+        """User viewed a course """
+        user = request.user
+        course = get_object_or_404(Course, pk=request.data.get('course_id'))
+
+        user_course_history = UserCourseHistory.objects.create(user=user, course=course)
+        serializer = CourseUserHistorySerializer(
+            user_course_history
+        )
+
+        return Response(serializer.data)
 
 
 class CourseUserReviewListAPIView(APIView):
