@@ -2,6 +2,10 @@ import csv
 import sqlite3
 import os
 from contextlib import contextmanager
+import re
+from nltk.stem import WordNetLemmatizer
+
+lemmatizer = WordNetLemmatizer()
 
 
 def create_database_and_table(db_name):
@@ -53,6 +57,14 @@ def is_numeric(value):
     except (ValueError, TypeError):
         return False
 
+def clean_for_tags(text):
+    text = re.sub(r'��+', '', text)  # This removes "��" or any repeated "��" characters
+    text = re.sub(r'[^\x00-\x7F]+', '', text)  # Removes non-ASCII characters
+    text = re.sub(r'[^a-zA-Z\s]', '', text)  # Remove anything that is not a letter or space
+    text = text.lower()  # Convert text to lowercase
+    text = ' '.join([lemmatizer.lemmatize(word) for word in text.split()])  # Lemmatization
+    return text
+
 
 def import_csv_to_sqlite(csv_file_path, db_name):
     """
@@ -87,10 +99,13 @@ def import_csv_to_sqlite(csv_file_path, db_name):
                     course_rating = float(row['Course Rating']) if is_numeric(row['Course Rating']) else None
                     if not is_numeric(row['Course Rating']) and row['Course Rating']:
                         invalid_ratings.append((row['Course Name'], row['Course Rating']))
+                    row['Course Name'] = clean_for_tags(row['Course Name'])
+                    row['Course Description'] = clean_for_tags(row['Course Description'])
+
 
                     cursor.execute("""
-                                   INSERT INTO courses (course_name, university, difficulty_level,
-                                                        course_rating, course_url, course_description, skills)
+                                   INSERT INTO courses (name, university, difficulty_level,
+                                                        rating, url, description, skills, thumnail)
                                    VALUES (?, ?, ?, ?, ?, ?, ?)
                                    """, (
                                        row['Course Name'],
