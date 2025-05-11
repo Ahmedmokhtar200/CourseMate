@@ -40,7 +40,7 @@ function Sidebar({ user, onLogout, isOpen, onClose }) {
                 return (
                     <div className="p-1 space-y-3">
                         <h3 className="text-base font-semibold mb-2 text-white px-2">View History</h3>
-                        {user.viewHistory.length > 0 ? (
+                        {user.viewHistory && user.viewHistory.length > 0 ? (
                             <ul className="space-y-3 max-h-48 overflow-y-auto pr-1">
                                 {user.viewHistory.map(item => (
                                     <li key={`hist-${item.id}`} className="flex items-center space-x-2 p-2 rounded hover:bg-gray-700/50 transition-colors duration-150 cursor-pointer" onClick={() => navigate(`/course/${item.id}`)}>
@@ -59,7 +59,7 @@ function Sidebar({ user, onLogout, isOpen, onClose }) {
                 return (
                     <div className="p-1 space-y-2">
                         <h3 className="text-base font-semibold mb-2 text-white px-2">Rating History</h3>
-                        {user.ratingHistory.length > 0 ? (
+                        {user.ratingHistory && user.ratingHistory.length > 0 ? (
                             <ul className="space-y-2 max-h-48 overflow-y-auto pr-1">
                                 {user.ratingHistory.map(item => (
                                     <li key={`rate-${item.id}`} className="text-xs p-2 rounded hover:bg-gray-700/50 transition-colors duration-150 cursor-pointer" onClick={() => navigate(`/course/${item.id}`)}>
@@ -75,7 +75,7 @@ function Sidebar({ user, onLogout, isOpen, onClose }) {
                 return (
                     <div className="p-1 space-y-3">
                         <h3 className="text-base font-semibold mb-2 text-white px-2">Review History</h3>
-                         {user.reviewHistory.length > 0 ? (
+                         {user.reviewHistory && user.reviewHistory.length > 0 ? (
                             <ul className="space-y-3 max-h-48 overflow-y-auto pr-1">
                                 {user.reviewHistory.map((item, index) => (
                                     <li key={`rev-${item.id}-${index}`} className="text-xs p-2 rounded border-b border-gray-700 last:border-b-0 hover:bg-gray-700/50 transition-colors duration-150 cursor-pointer" onClick={() => navigate(`/course/${item.id}`)}>
@@ -112,10 +112,12 @@ function Sidebar({ user, onLogout, isOpen, onClose }) {
             )}
             <aside
                 id="main-sidebar"
-                className={`fixed top-0 left-0 h-full bg-gradient-to-b from-gray-800 to-gray-900 text-white w-64 flex flex-col shadow-xl transition-transform duration-300 ease-in-out z-40 ${isOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 lg:sticky lg:h-screen lg:z-auto lg:shadow-none`}
+                className={`w-64 bg-gradient-to-b from-gray-800 to-gray-900 text-white flex flex-col h-screen ${
+                    isOpen ? 'fixed inset-y-0 left-0 z-50' : 'fixed inset-y-0 -left-64 z-50'
+                } lg:relative lg:left-0 lg:z-0 transition-all duration-300 ease-in-out`}
                 aria-label="Main Navigation"
             >
-                <div className="flex items-center justify-between p-4 border-b border-gray-700 flex-shrink-0">
+                <div className="flex items-center justify-between p-4 border-b border-gray-700">
                      <div className="flex items-center space-x-2 cursor-pointer" onClick={() => handleNavigation('/')}>
                         <AppLogoIcon className="h-8 w-8 text-indigo-400" />
                         <span className="text-xl font-semibold text-white">CourseMate</span>
@@ -124,30 +126,34 @@ function Sidebar({ user, onLogout, isOpen, onClose }) {
                         <ClearIcon className="h-6 w-6" />
                     </button>
                 </div>
-                <nav className="flex-grow p-4 space-y-2 overflow-y-auto">
-                   {menuItems.map(item => (
+                <div className="flex flex-col flex-1 overflow-y-auto">
+                    <nav className="flex-none p-4 space-y-2">
+                        {menuItems.map(item => (
+                            <button
+                                key={item.id}
+                                onClick={() => setActiveSection(item.id)}
+                                className={`w-full flex items-center px-3 py-2.5 rounded-md text-sm font-medium transition-colors duration-150 ${
+                                    activeSection === item.id ? 'bg-indigo-600 text-white shadow-inner' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
+                                }`}
+                                aria-current={activeSection === item.id ? 'page' : undefined}
+                            >
+                                <span className="mr-3 h-5 w-5">{item.icon}</span>
+                                {item.label}
+                            </button>
+                        ))}
+                    </nav>
+                    <div className="flex-1 p-4 border-t border-gray-700 bg-gray-800/50 overflow-y-auto">
+                        {renderSectionContent()}
+                    </div>
+                    <div className="flex-none p-4 border-t border-gray-700">
                         <button
-                            key={item.id}
-                            onClick={() => {setActiveSection(item.id); /* Navigation for sections like 'edit profile' could go here */ }}
-                            className={`w-full flex items-center px-3 py-2.5 rounded-md text-sm font-medium transition-colors duration-150 ${activeSection === item.id ? 'bg-indigo-600 text-white shadow-inner' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}`}
-                            aria-current={activeSection === item.id ? 'page' : undefined}
+                            onClick={onLogout}
+                            className="w-full flex items-center px-3 py-2 rounded-md text-sm font-medium text-red-400 hover:bg-red-800 hover:text-white transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-white focus-visible:bg-red-800"
                         >
-                            <span className="mr-3 h-5 w-5">{item.icon}</span>
-                            {item.label}
+                            <LogoutIcon className="mr-3"/>
+                            Logout
                         </button>
-                    ))}
-                </nav>
-                <div className="flex-shrink-0 p-4 border-t border-gray-700 bg-gray-800/50 min-h-[150px]">
-                     {renderSectionContent()}
-                </div>
-                <div className="p-4 mt-auto border-t border-gray-700 flex-shrink-0">
-                    <button
-                        onClick={onLogout}
-                        className="w-full flex items-center px-3 py-2 rounded-md text-sm font-medium text-red-400 hover:bg-red-800 hover:text-white transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-white focus-visible:bg-red-800"
-                    >
-                        <LogoutIcon className="mr-3"/>
-                        Logout
-                    </button>
+                    </div>
                 </div>
             </aside>
        </>

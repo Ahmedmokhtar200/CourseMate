@@ -26,19 +26,33 @@ const MainLayout = ({ children, auth, location }) => {
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="flex min-h-screen h-screen overflow-hidden">
       {/* Sidebar */}
       {auth.isLoggedIn && auth.currentUser && (
-        <Sidebar
-          user={auth.currentUser}
-          onLogout={auth.logout}
-          isOpen={isSidebarOpen}
-          onClose={closeSidebar}
-        />
+        <div className="hidden lg:block h-full">
+          <Sidebar
+            user={auth.currentUser}
+            onLogout={auth.logout}
+            isOpen={isSidebarOpen}
+            onClose={closeSidebar}
+          />
+        </div>
+      )}
+
+      {/* Mobile Sidebar */}
+      {auth.isLoggedIn && auth.currentUser && (
+        <div className="lg:hidden">
+          <Sidebar
+            user={auth.currentUser}
+            onLogout={auth.logout}
+            isOpen={isSidebarOpen}
+            onClose={closeSidebar}
+          />
+        </div>
       )}
 
       {/* Backdrop for mobile when sidebar is open */}
-      {auth.isLoggedIn && isSidebarOpen && window.innerWidth < 1024 && (
+      {auth.isLoggedIn && isSidebarOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-10 lg:hidden"
           onClick={closeSidebar}
@@ -47,11 +61,7 @@ const MainLayout = ({ children, auth, location }) => {
       )}
 
       {/* Main Content Container */}
-      <div
-        className={`flex-1 flex flex-col transition-transform duration-300 ease-in-out bg-white z-20 relative lg:ml-0 ${
-          isSidebarOpen && window.innerWidth < 1024 ? 'translate-x-0' : 'translate-x-0'
-        } ${auth.isLoggedIn && window.innerWidth >= 1024 ? 'lg:ml-64' : 'lg:ml-0'}`}
-      >
+      <div className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Mobile Header */}
         {auth.isLoggedIn && (
           <header className="bg-white shadow-sm p-3 flex justify-between items-center sticky top-0 z-20 border-b border-gray-200 lg:hidden">
@@ -79,11 +89,9 @@ const MainLayout = ({ children, auth, location }) => {
         )}
 
         {/* Main Content Area */}
-        <main className="flex-grow overflow-y-auto bg-white">
+        <main className="flex-1 overflow-y-auto">
           {children}
         </main>
-
-        
       </div>
     </div>
   );
