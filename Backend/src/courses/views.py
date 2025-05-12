@@ -1,3 +1,6 @@
+import joblib
+from recommender_model.cfrecommender import CFRecommender
+
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 
@@ -22,6 +25,7 @@ from courses.models import (Course,
                             UserCourseRating)
 
 User = get_user_model()
+cf_recommender = CFRecommender.load_model("recommender_model/cf_recommender.pkl")
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -53,11 +57,25 @@ class CourseViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['get'])
     def recommendations(self, request, pk=None):
         course = self.get_object()
-        # Fetch up to 4 related courses (exclude current course)
-        recommended = Course.objects.filter(
-            Q(university=course.university)
-        ).exclude(id=course.id)[:4]
-        serializer = self.get_serializer(recommended, many=True)
+
+        recommendations = cf_recommender.get_recommendations(course.name)[:4]
+
+        # # Fetch up to 4 related courses (exclude current course)
+        # recommended = Course.objects.filter(
+        #     Q(university=course.university)
+        # ).exclude(id=course.id)[:4]
+        cleaned_recommendations = [
+            {
+                'name': item['course_name'],
+                'url': item['course_url'],
+                'rating': item['rating'],
+                'university': item['institution'],
+                'difficulty_level': item['difficulty_level'],
+            }
+            for item in recommendations
+        ]
+        print('recomendation is :',cleaned_recommendations)
+        serializer = self.get_serializer(cleaned_recommendations, many=True)
         return Response(serializer.data)
 
 

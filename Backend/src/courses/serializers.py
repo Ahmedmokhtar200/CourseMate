@@ -7,6 +7,9 @@ from courses.models import (Course,
 
 
 class CourseSerializer(serializers.ModelSerializer):
+    skills = serializers.CharField(required=False, allow_blank=True)
+    description = serializers.CharField(required=False, allow_blank=True)
+
     class Meta:
         model = Course
         fields = '__all__'
